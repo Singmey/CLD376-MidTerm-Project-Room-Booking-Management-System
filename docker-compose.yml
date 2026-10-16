@@ -1,3 +1,6 @@
+x-mongo: &mongo
+  MONGO_URI: ${MONGO_URI}
+
 services:
   gateway:
     build: ./API-Gateway_Microservice
@@ -15,38 +18,57 @@ services:
 
   registration:
     build: ./Registration_Microservice
+    environment:
+      <<: *mongo
+    restart: on-failure
     restart: on-failure
 
   login:
     build: ./Authentication_Microservice
     environment:
+      <<: *mongo
       JWT_SECRET: ${JWT_SECRET}
     restart: on-failure
 
   room:
     build: ./Room_Microservice
+    environment:
+      <<: *mongo
     restart: on-failure
 
-  booking-service-1: &booking
+  booking-service-1: 
     build: ./Booking_Microservice
     environment:
+      <<: *mongo
       ROOM_URL: http://room:5003
       PAYMENT_URL: http://payment:5005
       NOTIF_URL: http://notification:5006
+      INSTANCE_NAME: booking-1
     restart: on-failure
 
   booking-service-2:
-    <<: *booking
+    build: ./Booking_Microservice
+    environment:
+      <<: *mongo
+      ROOM_URL: http://room:5003
+      PAYMENT_URL: http://payment:5005
+      NOTIF_URL: http://notification:5006
+      INSTANCE_NAME: booking-2
+    restart: on-failure
 
   payment:
     build: ./Payment_Microservice
+    environment:
+      <<: *mongo
     restart: on-failure
 
   notification:
     build: ./Notifications_Microservice
+    environment:
+      <<: *mongo
     restart: on-failure
 
   nginx:
     build: ./nginx
-    depends_on: [booking1, booking2]
+    depends_on: [booking-service-1, booking-service-2]
     restart: on-failure
