@@ -15,14 +15,12 @@ const NOTIF_URL = process.env.NOTIF_URL || 'http://localhost:5006';
 
 app.get('/health', (req, res) => res.json({ status: 'ok', service: 'booking', instance: process.env.INSTANCE_NAME || 'booking-1' }));
 
-
 /* 
 {
-  "roomId": "",
-  "checkIn": "2026-12-25",
-  "checkOut": "2026-12-27"
+    "roomId": "",
+    "checkIn": "2026-12-25",
+    "checkOut": "2026-12-27"
 }
-
 
 */
 
@@ -122,6 +120,7 @@ app.post('/bookroom', async (req, res) => {
 
 // MY BOOKINGS (user)
 app.get('/mybookings', async (req, res) => {
+    console.log('handled by', process.env.INSTANCE_NAME);
     try {
         const bookings = await RoomBookingModel.find({ userId: req.headers['x-user-id'] }).sort({ createdAt: -1 });
         res.json(bookings);
