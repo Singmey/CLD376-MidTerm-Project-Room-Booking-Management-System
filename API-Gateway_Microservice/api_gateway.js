@@ -87,6 +87,12 @@ app.use('/room', authToken,
     forward(ROOM_URL));
 
 // BOOKING
+// Public: shows which booking instance answered (for the load balancer demo)
+app.get('/booking/health', (req, res) => {
+    req.url = '/health';
+    forward(BOOKING_URL)(req, res);
+});
+
 app.use('/booking', authToken,
     myOrAdmin({ POST: ['user'], PUT: ['user', 'admin'], DELETE: ['admin'] }),
     forward(BOOKING_URL));

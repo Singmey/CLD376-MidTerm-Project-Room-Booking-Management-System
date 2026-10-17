@@ -99,6 +99,12 @@ app.get('/viewroom/:id', async (req, res) => {
 });
 
 // UPDATE ROOM (admin)
+/* 
+{
+  "pricePerNight": 120,
+  "description": "Double room with city view and balcony"
+}
+  */
 app.put('/updateroom/:id', async (req, res) => {
     try {
         if (!mongoose.isValidObjectId(req.params.id)) {
