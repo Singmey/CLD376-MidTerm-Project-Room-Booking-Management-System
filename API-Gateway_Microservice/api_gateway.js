@@ -87,7 +87,7 @@ app.use('/room', authToken,
     forward(ROOM_URL));
 
 // BOOKING
-// Public: shows which booking instance answered (for the load balancer demo)
+// Public: shows which booking instance answered (for the load balancer)
 app.get('/booking/health', (req, res) => {
     req.url = '/health';
     forward(BOOKING_URL)(req, res);

@@ -118,6 +118,28 @@ app.post('/bookroom', async (req, res) => {
     }
 });
 
+// Load Balancer nginx
+const VisitModel = mongoose.model(
+    'Visit',
+    new mongoose.Schema({ _id: String, count: Number }),
+    'visits'
+);
+
+// Open through nginx: shows which instance answered + shared visit counter
+app.get('/', async (req, res) => {
+    try {
+        const v = await VisitModel.findByIdAndUpdate(
+        'booking-visits',
+        { $inc: { count: 1 } },
+        { new: true, upsert: true }
+        );
+        res.send(`${process.env.INSTANCE_NAME}: Number of visits is: ${v.count}`);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+
 // MY BOOKINGS (user)
 app.get('/mybookings', async (req, res) => {
     console.log('handled by', process.env.INSTANCE_NAME);
