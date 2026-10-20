@@ -134,7 +134,7 @@ app.get('/', async (req, res) => {
         { $inc: { count: 1 } },
         { new: true, upsert: true }
         );
-        res.send(`${process.env.INSTANCE_NAME} (container ${os.hostname()}): Number of visits is: ${v.count}`);
+        res.send(`${os.hostname()} ${process.env.INSTANCE_NAME}: Number of visits is: ${v.count}`);
     } catch (err) {
         res.status(500).send(err.message);
     }
